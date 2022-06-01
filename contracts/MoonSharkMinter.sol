@@ -7,49 +7,79 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract MoonSharkMinter is Ownable {
   IMoonSharkNFT public moonSharkNFT;
-  mapping(address => bool) public whitelist;
+  mapping(address => WhiteList) public whitelists;
   uint public MAX_CAP;
+
+  struct WhiteList {
+    uint maxMintAmount;
+    uint mintedAmount;
+    address memberAddress;
+  }
   
   constructor(address _moonSharkNFT,uint maxCap) {
     moonSharkNFT = IMoonSharkNFT(_moonSharkNFT);
     MAX_CAP = maxCap;
   }
 
-  function batchMint(uint quantity) external {
-    require(whitelist[msg.sender] == true,"NOT IN WHITELIST");
-
-    uint supply = moonSharkNFT.totalSupply();
-    require(supply+quantity <= MAX_CAP,"MAX_CAP Reached");
-
-    moonSharkNFT.mintTo(quantity,msg.sender);
-  }
-
   function mint() external {
-    require(whitelist[msg.sender] == true,"NOT IN WHITELIST");
+    require(whitelists[msg.sender].memberAddress != address(0),"NOT IN WHITELIST");
 
     uint supply = moonSharkNFT.totalSupply();
     require(supply+1 <= MAX_CAP,"MAX_CAP Reached");
 
+    WhiteList storage member = whitelists[msg.sender];
+
+    require(member.mintedAmount+1 <= member.maxMintAmount,"MEMBER WHITELIST CAP REACHED");
     moonSharkNFT.mintTo(1,msg.sender);
+    member.mintedAmount += 1;
   }
 
-  function addToWhitelist(address member) external onlyOwner {
-    whitelist[member] = true;
+  function batchMint(uint quantity) external {
+    require(whitelists[msg.sender].memberAddress != address(0),"NOT IN WHITELIST");
+
+    uint supply = moonSharkNFT.totalSupply();
+    require(supply+quantity <= MAX_CAP,"MAX_CAP Reached");
+
+    WhiteList storage member = whitelists[msg.sender];
+
+    require(member.mintedAmount+quantity <= member.maxMintAmount,"MEMBER WHITELIST CAP REACHED");
+    moonSharkNFT.mintTo(quantity,msg.sender);
+    member.mintedAmount += quantity;
   }
 
-  function removeFromWhitelist(address member) external onlyOwner {
-    whitelist[member] = false;
+
+  function addToWhitelist(address member,uint cap) external onlyOwner {
+    require(whitelists[msg.sender].memberAddress == address(0),"ALREADY WHITELISTED");
+
+    whitelists[member] = WhiteList({
+      maxMintAmount: cap,
+      mintedAmount: 0,
+      memberAddress: member
+    });
   }
 
-  function batchAddToWhitelist(address[] calldata members) external onlyOwner {
+  function batchAddToWhitelist(WhiteList[] calldata members) external onlyOwner {
+    require(whitelists[msg.sender].memberAddress == address(0),"ALREADY WHITELISTED");
+
     for(uint i=0; i < members.length; i++){
-      whitelist[members[i]] = true;
+      whitelists[members[i].memberAddress] = members[i];
     }
   }
 
+
+  function removeFromWhitelist(address member) external onlyOwner {
+    require(whitelists[msg.sender].memberAddress != address(0),"NOT IN WHITELIST");
+
+    WhiteList memory emptyWhiteList;
+    whitelists[member] = emptyWhiteList;
+  }
+
   function batchRemoveFromWhitelist(address[] calldata members) external onlyOwner {
+    require(whitelists[msg.sender].memberAddress != address(0),"NOT IN WHITELIST");
+
+    WhiteList memory emptyWhiteList;
     for(uint i=0; i < members.length; i++){
-      whitelist[members[i]] = false;
+      whitelists[members[i]] = emptyWhiteList;
     }
   }
 

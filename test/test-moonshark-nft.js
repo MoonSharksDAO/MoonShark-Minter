@@ -9,7 +9,7 @@ describe("MoonShark NFT", function () {
     [owner,odko,michael] = await ethers.getSigners()
 
     const MoonSharkNFT = await ethers.getContractFactory("MoonSharkNFT")
-    moonSharkNFTContract = await MoonSharkNFT.deploy('ipfs://QmP7cNFhnAqLiCLhQkCJQ9TCSenRb3jkYzvQKoqj7GUCXC/')
+    moonSharkNFTContract = await MoonSharkNFT.deploy('ipfs://QmVxhFNh1z74KARxYVLjJCDR5JEi6rAjKvbVqmYjcjV3Qt/')
     moonSharkNFTContract.deployed()
   })
 

@@ -20,33 +20,50 @@ describe("MoonShark NFT Minter", function () {
   it("Minter Mint", async function () {
     await moonSharkNFTContract.setMintRole(moonSharkMinterContract.address)
 
-    await moonSharkMinterContract.addToWhitelist(odko.address)
+    await moonSharkMinterContract.addToWhitelist(odko.address,10)
     await moonSharkMinterContract.connect(odko).mint()
 
     console.log("Total Supply - ",await moonSharkNFTContract.totalSupply())
-    console.log("#0 URI - ",await moonSharkNFTContract.tokenURI(0))
-    console.log("Owner of #0 - ",await moonSharkNFTContract.ownerOf(0))
     console.log("Odko NFT Balance - ",await moonSharkNFTContract.balanceOf(odko.address))
   })
 
   it("Minter BatchMint", async function () {
     await moonSharkNFTContract.setMintRole(moonSharkMinterContract.address)
 
-    await moonSharkMinterContract.addToWhitelist(odko.address)
+    await moonSharkMinterContract.addToWhitelist(odko.address,10)
     await moonSharkMinterContract.connect(odko).batchMint(10)
 
     console.log("Total Supply - ",await moonSharkNFTContract.totalSupply())
-    console.log("#0 URI - ",await moonSharkNFTContract.tokenURI(0))
-    console.log("Owner of #0 - ",await moonSharkNFTContract.ownerOf(0))
     console.log("Odko NFT Balance - ",await moonSharkNFTContract.balanceOf(odko.address))
   })
 
   it("Minter BatchMint - Max Cap Reached Revert", async function () {
     await moonSharkNFTContract.setMintRole(moonSharkMinterContract.address)
 
-    await moonSharkMinterContract.addToWhitelist(odko.address)
+    await moonSharkMinterContract.addToWhitelist(odko.address,20)
     await expect(moonSharkMinterContract.connect(odko).batchMint(11))
       .to.be.revertedWith('MAX_CAP Reached');
+  })
+
+  it("Minter Mint - Member Mint Cap Reached Revert", async function () {
+    await moonSharkNFTContract.setMintRole(moonSharkMinterContract.address)
+
+    await moonSharkMinterContract.addToWhitelist(odko.address,4)
+    await moonSharkMinterContract.connect(odko).mint()
+    await moonSharkMinterContract.connect(odko).mint()
+    await moonSharkMinterContract.connect(odko).mint()
+    await moonSharkMinterContract.connect(odko).mint()
+
+    await expect(moonSharkMinterContract.connect(odko).mint())
+      .to.be.revertedWith('MEMBER WHITELIST CAP REACHED');
+  })
+
+  it("Minter BatchMint - Member Mint Cap Reached Revert", async function () {
+    await moonSharkNFTContract.setMintRole(moonSharkMinterContract.address)
+
+    await moonSharkMinterContract.addToWhitelist(odko.address,4)
+    await expect(moonSharkMinterContract.connect(odko).batchMint(5))
+      .to.be.revertedWith('MEMBER WHITELIST CAP REACHED');
   })
 
 });
