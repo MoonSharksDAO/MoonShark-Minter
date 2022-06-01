@@ -61,4 +61,8 @@ contract MoonSharkNFTUpgradable is ERC721AUpgradeable, AccessControlUpgradeable 
       interfaceId == 0x5b5e139f; // ERC165 interface ID for ERC721Metadata.
   }
 
+  function version() pure virtual external returns( string memory ) {
+    return '1';
+  }
+
 }
