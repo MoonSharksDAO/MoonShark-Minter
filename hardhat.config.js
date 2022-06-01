@@ -1,12 +1,15 @@
 require('dotenv').config()
 require('hardhat-abi-exporter');
 
+
 // NatSpec Docs
 require('@primitivefi/hardhat-dodoc');
 require('hardhat-docgen');
 
 require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-etherscan");
+
+require('@openzeppelin/hardhat-upgrades');
 
 
 // This is a sample Hardhat task. To learn how to create your own go to

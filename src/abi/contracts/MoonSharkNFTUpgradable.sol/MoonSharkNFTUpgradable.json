@@ -1,5 +1,4 @@
 [
-  "constructor(string)",
   "error ApprovalCallerNotOwnerNorApproved()",
   "error ApprovalQueryForNonexistentToken()",
   "error ApprovalToCurrentOwner()",
@@ -15,14 +14,20 @@
   "error URIQueryForNonexistentToken()",
   "event Approval(address indexed,address indexed,uint256 indexed)",
   "event ApprovalForAll(address indexed,address indexed,bool)",
+  "event Initialized(uint8)",
+  "event OwnershipTransferred(address indexed,address indexed)",
   "event Transfer(address indexed,address indexed,uint256 indexed)",
+  "function adminMint(uint256) payable",
   "function approve(address,uint256)",
   "function balanceOf(address) view returns (uint256)",
   "function getApproved(uint256) view returns (address)",
+  "function initialize(string)",
   "function isApprovedForAll(address,address) view returns (bool)",
   "function mint(uint256) payable",
   "function name() view returns (string)",
+  "function owner() view returns (address)",
   "function ownerOf(uint256) view returns (address)",
+  "function renounceOwnership()",
   "function safeTransferFrom(address,address,uint256)",
   "function safeTransferFrom(address,address,uint256,bytes)",
   "function setApprovalForAll(address,bool)",
@@ -31,5 +36,6 @@
   "function symbol() view returns (string)",
   "function tokenURI(uint256) view returns (string)",
   "function totalSupply() view returns (uint256)",
-  "function transferFrom(address,address,uint256)"
+  "function transferFrom(address,address,uint256)",
+  "function transferOwnership(address)"
 ]

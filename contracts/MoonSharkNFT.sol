@@ -4,10 +4,10 @@ pragma solidity ^0.8.4;
 import "erc721a/contracts/ERC721A.sol";
 
 contract MoonSharkNFT is ERC721A {
-  string private uri;
+  string private ipfsBase;
 
-  constructor(string memory _uri) ERC721A("MoonShark", "MOONSHARK") {
-    uri = _uri;
+  constructor(string memory _ipfs) ERC721A("MoonShark", "MOONSHARK") {
+    ipfsBase = _ipfs;
   }
 
   function mint(uint256 quantity) external payable {
@@ -15,7 +15,11 @@ contract MoonSharkNFT is ERC721A {
   }
 
   function _baseURI() override internal view returns (string memory){
-    return uri;
+    return ipfsBase;
+  }
+
+  function setIpfs(string memory _ipfs) external {
+    ipfsBase = _ipfs;
   }
 
 }
