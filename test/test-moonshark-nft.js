@@ -14,6 +14,8 @@ describe("MoonShark NFT", function () {
   })
 
   it("Minting", async function () {
+    await moonSharkNFTContract.setMintRole(odko.address)
+
     await moonSharkNFTContract.connect(odko).mint(10)
     console.log("Total Supply - ",await moonSharkNFTContract.totalSupply())
     console.log("#0 URI - ",await moonSharkNFTContract.tokenURI(0))
