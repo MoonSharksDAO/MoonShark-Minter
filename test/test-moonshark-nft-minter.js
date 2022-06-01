@@ -20,6 +20,7 @@ describe("MoonShark NFT Minter", function () {
   it("Minter Mint", async function () {
     await moonSharkNFTContract.setMintRole(moonSharkMinterContract.address)
 
+    await moonSharkMinterContract.addToWhitelist(odko.address)
     await moonSharkMinterContract.connect(odko).mint()
 
     console.log("Total Supply - ",await moonSharkNFTContract.totalSupply())
@@ -31,6 +32,7 @@ describe("MoonShark NFT Minter", function () {
   it("Minter BatchMint", async function () {
     await moonSharkNFTContract.setMintRole(moonSharkMinterContract.address)
 
+    await moonSharkMinterContract.addToWhitelist(odko.address)
     await moonSharkMinterContract.connect(odko).batchMint(10)
 
     console.log("Total Supply - ",await moonSharkNFTContract.totalSupply())
@@ -42,6 +44,7 @@ describe("MoonShark NFT Minter", function () {
   it("Minter BatchMint - Max Cap Reached Revert", async function () {
     await moonSharkNFTContract.setMintRole(moonSharkMinterContract.address)
 
+    await moonSharkMinterContract.addToWhitelist(odko.address)
     await expect(moonSharkMinterContract.connect(odko).batchMint(11))
       .to.be.revertedWith('MAX_CAP Reached');
   })

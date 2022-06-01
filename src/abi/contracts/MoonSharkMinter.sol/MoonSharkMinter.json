@@ -1,7 +1,16 @@
 [
   "constructor(address,uint256)",
+  "event OwnershipTransferred(address indexed,address indexed)",
   "function MAX_CAP() view returns (uint256)",
+  "function addToWhitelist(address)",
+  "function batchAddToWhitelist(address[])",
   "function batchMint(uint256)",
+  "function batchRemoveFromWhitelist(address[])",
   "function mint()",
-  "function moonSharkNFT() view returns (address)"
+  "function moonSharkNFT() view returns (address)",
+  "function owner() view returns (address)",
+  "function removeFromWhitelist(address)",
+  "function renounceOwnership()",
+  "function transferOwnership(address)",
+  "function whitelist(address) view returns (bool)"
 ]
