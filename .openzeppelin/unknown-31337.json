@@ -2,19 +2,19 @@
   "manifestVersion": "3.2",
   "admin": {
     "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
-    "txHash": "0xb9fa2b51ba38c56552e57c4e4540e19bbcc964fd44412714bead09d9dfdefb9c"
+    "txHash": "0x7f7bf10674f81d0a5feb4a7926d663a2e53c7812ee54ea716f7c4aef725c02d6"
   },
   "proxies": [
     {
       "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
-      "txHash": "0x54ff1c034c27aee3ffd053440d7e0ef9ab3f8114669f8abd84f9d5662a1a42dc",
+      "txHash": "0x172484351d6a03e48d2582f3afbbf1c7f67ecc2d368736566654f6ef50a36f3e",
       "kind": "transparent"
     }
   ],
   "impls": {
-    "68cb1a362617dadb55274f9a7b711d719080290084d620807f532bcbfc6bff50": {
+    "4d8953f7476001403c959005f333c433b90f1755ed0cf61ffeffda6c460f1660": {
       "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-      "txHash": "0x5de5495f037b93a96e2e390f1429c2c07e5e2d929cfe389ce24bf14dd6dd0852",
+      "txHash": "0x719a91fa568d6ce385172d4d90aa66ae6c0246a1bb9094cbe66512bfb3573580",
       "layout": {
         "storage": [
           {
@@ -43,28 +43,36 @@
             "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:36"
           },
           {
-            "label": "_owner",
+            "label": "__gap",
             "offset": 0,
             "slot": "51",
-            "type": "t_address",
-            "contract": "OwnableUpgradeable",
-            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:22"
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ERC165Upgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol:41"
+          },
+          {
+            "label": "_roles",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_mapping(t_bytes32,t_struct(RoleData)34_storage)",
+            "contract": "AccessControlUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol:61"
           },
           {
             "label": "__gap",
             "offset": 0,
-            "slot": "52",
+            "slot": "102",
             "type": "t_array(t_uint256)49_storage",
-            "contract": "OwnableUpgradeable",
-            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:87"
+            "contract": "AccessControlUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol:247"
           },
           {
             "label": "ipfsBase",
             "offset": 0,
-            "slot": "101",
+            "slot": "151",
             "type": "t_string_storage",
             "contract": "MoonSharkNFTUpgradable",
-            "src": "contracts/MoonSharkNFTUpgradable.sol:8"
+            "src": "contracts/MoonSharkNFTUpgradable.sol:12"
           }
         ],
         "types": {
@@ -84,9 +92,39 @@
             "label": "bool",
             "numberOfBytes": "1"
           },
+          "t_bytes32": {
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_bytes32,t_struct(RoleData)34_storage)": {
+            "label": "mapping(bytes32 => struct AccessControlUpgradeable.RoleData)",
+            "numberOfBytes": "32"
+          },
           "t_string_storage": {
             "label": "string",
             "numberOfBytes": "32"
+          },
+          "t_struct(RoleData)34_storage": {
+            "label": "struct AccessControlUpgradeable.RoleData",
+            "members": [
+              {
+                "label": "members",
+                "type": "t_mapping(t_address,t_bool)",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "adminRole",
+                "type": "t_bytes32",
+                "offset": 0,
+                "slot": "1"
+              }
+            ],
+            "numberOfBytes": "64"
           },
           "t_uint256": {
             "label": "uint256",

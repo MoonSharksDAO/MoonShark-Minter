@@ -15,9 +15,7 @@ contract MoonSharkNFT is ERC721A,AccessControl {
     _setupRole(ADMIN_ROLE, msg.sender);
   }
 
-  function mint(uint256 quantity) external payable {
-    require(hasRole(MINTER_ROLE, msg.sender), "NOT MINTER");
-
+  function mint(uint256 quantity) onlyRole(MINTER_ROLE) external payable {
     _mint(msg.sender, quantity);
   }
 
@@ -25,21 +23,15 @@ contract MoonSharkNFT is ERC721A,AccessControl {
     return ipfsBase;
   }
 
-  function setIpfs(string memory _ipfs) external {
-    require(hasRole(ADMIN_ROLE, msg.sender), "NOT ADMIN");
-
+  function setIpfs(string memory _ipfs) onlyRole(ADMIN_ROLE) external {
     ipfsBase = _ipfs;
   }
 
-  function setAdminRole(address adminAddress) external {
-    require(hasRole(ADMIN_ROLE, msg.sender), "NOT ADMIN");
-
+  function setAdminRole(address adminAddress) onlyRole(ADMIN_ROLE) external {
     _setupRole(ADMIN_ROLE, adminAddress);
   }
 
-  function setMintRole(address mintAddress) external {
-    require(hasRole(ADMIN_ROLE, msg.sender), "NOT ADMIN");
-
+  function setMintRole(address mintAddress) onlyRole(ADMIN_ROLE) external {
     _setupRole(MINTER_ROLE, mintAddress);
   }
 

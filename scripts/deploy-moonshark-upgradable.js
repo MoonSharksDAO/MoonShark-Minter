@@ -1,12 +1,13 @@
 const { ethers, upgrades } = require('hardhat');
 
 async function main() {
+  let [owner] = await ethers.getSigners()
   const MoonSharkNFTUpgradable = await ethers.getContractFactory("MoonSharkNFTUpgradable");
 
   // https://docs.openzeppelin.com/upgrades-plugins/1.x/api-hardhat-upgrades#deploy-proxy
   const moonSharkNFTUpgradableContract = await upgrades.deployProxy(
     MoonSharkNFTUpgradable, 
-    ['ipfs://QmP7cNFhnAqLiCLhQkCJQ9TCSenRb3jkYzvQKoqj7GUCXC/'], 
+    ['ipfs://QmP7cNFhnAqLiCLhQkCJQ9TCSenRb3jkYzvQKoqj7GUCXC/',owner.address], 
     { initializer: 'initialize' }
   );
 
