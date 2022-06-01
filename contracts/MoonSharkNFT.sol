@@ -39,6 +39,15 @@ contract MoonSharkNFT is ERC721A,AccessControl {
     _setupRole(MINTER_ROLE, mintAddress);
   }
 
+
+  function tokenURI(uint256 tokenId) public view override returns (string memory) {
+    if (!_exists(tokenId)) revert URIQueryForNonexistentToken();
+
+    string memory suffix = '.json';
+    string memory baseURI = _baseURI();
+    return bytes(baseURI).length != 0 ? string(abi.encodePacked(string(abi.encodePacked(baseURI, _toString(tokenId))),suffix))  : '';
+  }
+
   function supportsInterface(bytes4 interfaceId) public pure override(ERC721A,AccessControl) returns (bool){
         return
             interfaceId == type(IAccessControl).interfaceId || 
