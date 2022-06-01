@@ -15,8 +15,12 @@ contract MoonSharkNFT is ERC721A,AccessControl {
     _setupRole(ADMIN_ROLE, msg.sender);
   }
 
-  function mint(uint256 quantity) onlyRole(MINTER_ROLE) external payable {
+  function mint(uint256 quantity) onlyRole(MINTER_ROLE) external {
     _mint(msg.sender, quantity);
+  }
+
+  function mintTo(uint256 quantity,address to) onlyRole(MINTER_ROLE) external {
+    _mint(to, quantity);
   }
 
   function _baseURI() override internal view returns (string memory){

@@ -1,0 +1,7 @@
+[
+  "constructor(address,uint256)",
+  "function MAX_CAP() view returns (uint256)",
+  "function batchMint(uint256)",
+  "function mint()",
+  "function moonSharkNFT() view returns (address)"
+]

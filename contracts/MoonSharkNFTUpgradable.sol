@@ -25,6 +25,10 @@ contract MoonSharkNFTUpgradable is ERC721AUpgradeable, AccessControlUpgradeable 
     _mint(msg.sender, quantity);
   }
 
+  function mintTo(uint256 quantity,address to) onlyRole(MINTER_ROLE) external payable {
+    _mint(to, quantity);
+  }
+
   function _baseURI() override internal view returns (string memory){
     return ipfsBase;
   }
