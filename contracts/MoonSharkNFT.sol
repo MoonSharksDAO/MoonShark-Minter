@@ -2,9 +2,10 @@
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
 import "erc721a/contracts/ERC721A.sol";
 
-contract MoonSharkNFT is ERC721A,AccessControl {
+contract MoonSharkNFT is ERC721A,AccessControl,Pausable {
   string private ipfsBase;
   bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
   bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
@@ -14,11 +15,11 @@ contract MoonSharkNFT is ERC721A,AccessControl {
     _setupRole(ADMIN_ROLE, msg.sender);
   }
 
-  function mint(uint256 quantity) onlyRole(MINTER_ROLE) external {
+  function mint(uint256 quantity) whenNotPaused() onlyRole(MINTER_ROLE) external {
     _mint(msg.sender, quantity);
   }
 
-  function mintTo(uint256 quantity,address to) onlyRole(MINTER_ROLE) external {
+  function mintTo(uint256 quantity,address to) whenNotPaused() onlyRole(MINTER_ROLE) external {
     _mint(to, quantity);
   }
 
@@ -26,7 +27,7 @@ contract MoonSharkNFT is ERC721A,AccessControl {
     return ipfsBase;
   }
 
-  function setIpfs(string memory _ipfs) onlyRole(ADMIN_ROLE) external {
+  function setIpfs(string memory _ipfs) whenPaused() onlyRole(ADMIN_ROLE) external {
     ipfsBase = _ipfs;
   }
 
@@ -36,6 +37,14 @@ contract MoonSharkNFT is ERC721A,AccessControl {
 
   function setMintRole(address mintAddress) onlyRole(ADMIN_ROLE) external {
     _setupRole(MINTER_ROLE, mintAddress);
+  }
+
+  function revokeAdminRole(address to) onlyRole(ADMIN_ROLE) external {
+    _revokeRole(ADMIN_ROLE, to);
+  }
+
+  function revokeMintRole(address to) onlyRole(ADMIN_ROLE) external {
+    _revokeRole(MINTER_ROLE, to);
   }
 
   function tokenURI(uint256 tokenId) public view override returns (string memory) {
