@@ -3,12 +3,14 @@ pragma solidity ^0.8.4;
 
 import "./IMoonSharkNFT.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
 
 
-contract MoonSharkMinter is Ownable {
+contract MoonSharkMinterPrivate is Ownable,Pausable {
   IMoonSharkNFT public moonSharkNFT;
   mapping(address => WhiteList) public whitelists;
   uint public MAX_CAP;
+  uint public MINT_FEE;
 
   struct WhiteList {
     uint maxMintAmount;
@@ -19,9 +21,10 @@ contract MoonSharkMinter is Ownable {
   constructor(address _moonSharkNFT,uint maxCap) {
     moonSharkNFT = IMoonSharkNFT(_moonSharkNFT);
     MAX_CAP = maxCap;
+    MINT_FEE = 0.05 ether;
   }
 
-  function mint() external {
+  function mint() external whenNotPaused() {
     require(whitelists[msg.sender].memberAddress != address(0),"NOT IN WHITELIST");
 
     uint supply = moonSharkNFT.totalSupply();
@@ -34,7 +37,7 @@ contract MoonSharkMinter is Ownable {
     member.mintedAmount += 1;
   }
 
-  function batchMint(uint quantity) external {
+  function batchMint(uint quantity) external whenNotPaused() {
     require(whitelists[msg.sender].memberAddress != address(0),"NOT IN WHITELIST");
 
     uint supply = moonSharkNFT.totalSupply();
@@ -48,21 +51,25 @@ contract MoonSharkMinter is Ownable {
   }
 
 
-  function addToWhitelist(address member,uint cap) external onlyOwner {
+  function addToWhitelist(address member) external onlyOwner {
     require(whitelists[msg.sender].memberAddress == address(0),"ALREADY WHITELISTED");
 
     whitelists[member] = WhiteList({
-      maxMintAmount: cap,
+      maxMintAmount: 5,
       mintedAmount: 0,
       memberAddress: member
     });
   }
 
-  function batchAddToWhitelist(WhiteList[] calldata members) external onlyOwner {
+  function batchAddToWhitelist(address[] calldata members) external onlyOwner {
     require(whitelists[msg.sender].memberAddress == address(0),"ALREADY WHITELISTED");
 
     for(uint i=0; i < members.length; i++){
-      whitelists[members[i].memberAddress] = members[i];
+      whitelists[members[i]] = WhiteList({
+        maxMintAmount: 5,
+        mintedAmount: 0,
+        memberAddress: members[i]
+      });
     }
   }
 
@@ -72,15 +79,6 @@ contract MoonSharkMinter is Ownable {
 
     WhiteList memory emptyWhiteList;
     whitelists[member] = emptyWhiteList;
-  }
-
-  function batchRemoveFromWhitelist(address[] calldata members) external onlyOwner {
-    require(whitelists[msg.sender].memberAddress != address(0),"NOT IN WHITELIST");
-
-    WhiteList memory emptyWhiteList;
-    for(uint i=0; i < members.length; i++){
-      whitelists[members[i]] = emptyWhiteList;
-    }
   }
 
 }

@@ -9,7 +9,6 @@ contract MoonSharkNFT is ERC721A,AccessControl {
   bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
   bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
 
-
   constructor(string memory _ipfs) ERC721A("MoonShark", "MOONSHARK") {
     ipfsBase = _ipfs;
     _setupRole(ADMIN_ROLE, msg.sender);
@@ -39,13 +38,16 @@ contract MoonSharkNFT is ERC721A,AccessControl {
     _setupRole(MINTER_ROLE, mintAddress);
   }
 
-
   function tokenURI(uint256 tokenId) public view override returns (string memory) {
     if (!_exists(tokenId)) revert URIQueryForNonexistentToken();
 
     string memory suffix = '.json';
     string memory baseURI = _baseURI();
     return bytes(baseURI).length != 0 ? string(abi.encodePacked(string(abi.encodePacked(baseURI, _toString(tokenId))),suffix))  : '';
+  }
+
+  function _startTokenId() internal pure override returns (uint256) {
+    return 1;
   }
 
   function supportsInterface(bytes4 interfaceId) public pure override(ERC721A,AccessControl) returns (bool){
