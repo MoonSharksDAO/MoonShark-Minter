@@ -10,7 +10,7 @@ contract MoonSharkNFT is ERC721A,AccessControl,Pausable {
   bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
   bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
 
-  constructor(string memory _ipfs) ERC721A("MoonShark", "MOONSHARK") {
+  constructor(string memory _ipfs) ERC721A("MoonSharks", "SHARKS") {
     ipfsBase = _ipfs;
     _setupRole(ADMIN_ROLE, msg.sender);
   }
