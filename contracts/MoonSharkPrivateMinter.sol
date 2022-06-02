@@ -6,14 +6,15 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 
 
-contract MoonSharkMinterPrivate is Ownable,Pausable {
+contract MoonSharkPrivateMinter is Ownable,Pausable {
   IMoonSharkNFT public moonSharkNFT;
   mapping(address => WhiteList) public whitelists;
+
   uint public MAX_CAP;
-  uint public MINT_FEE;
+  uint public constant MAX_MINT_AMOUNT = 5;
+  uint public constant SINGLE_MINT_FEE = 0.05 ether;
 
   struct WhiteList {
-    uint maxMintAmount;
     uint mintedAmount;
     address memberAddress;
   }
@@ -21,31 +22,32 @@ contract MoonSharkMinterPrivate is Ownable,Pausable {
   constructor(address _moonSharkNFT,uint maxCap) {
     moonSharkNFT = IMoonSharkNFT(_moonSharkNFT);
     MAX_CAP = maxCap;
-    MINT_FEE = 0.05 ether;
   }
 
-  function mint() external whenNotPaused() {
+  function mint() external payable whenNotPaused() {
+    require(msg.value == SINGLE_MINT_FEE,"FEE ISN'T CORRECT");
     require(whitelists[msg.sender].memberAddress != address(0),"NOT IN WHITELIST");
 
     uint supply = moonSharkNFT.totalSupply();
-    require(supply+1 <= MAX_CAP,"MAX_CAP Reached");
+    require(supply+1 <= MAX_CAP,"MAX_CAP REACHED");
 
     WhiteList storage member = whitelists[msg.sender];
 
-    require(member.mintedAmount+1 <= member.maxMintAmount,"MEMBER WHITELIST CAP REACHED");
+    require(member.mintedAmount+1 <= MAX_MINT_AMOUNT,"MEMBER WHITELIST CAP REACHED");
     moonSharkNFT.mintTo(1,msg.sender);
     member.mintedAmount += 1;
   }
 
-  function batchMint(uint quantity) external whenNotPaused() {
+  function batchMint(uint quantity) external payable whenNotPaused() {
+    require(msg.value == SINGLE_MINT_FEE*quantity,"FEE ISN'T CORRECT");
     require(whitelists[msg.sender].memberAddress != address(0),"NOT IN WHITELIST");
 
-    uint supply = moonSharkNFT.totalSupply();
-    require(supply+quantity <= MAX_CAP,"MAX_CAP Reached");
-
     WhiteList storage member = whitelists[msg.sender];
+    require(member.mintedAmount+quantity <= MAX_MINT_AMOUNT,"MEMBER WHITELIST CAP REACHED");
 
-    require(member.mintedAmount+quantity <= member.maxMintAmount,"MEMBER WHITELIST CAP REACHED");
+    uint supply = moonSharkNFT.totalSupply();
+    require(supply+quantity <= MAX_CAP,"MAX_CAP REACHED");
+
     moonSharkNFT.mintTo(quantity,msg.sender);
     member.mintedAmount += quantity;
   }
@@ -55,7 +57,6 @@ contract MoonSharkMinterPrivate is Ownable,Pausable {
     require(whitelists[msg.sender].memberAddress == address(0),"ALREADY WHITELISTED");
 
     whitelists[member] = WhiteList({
-      maxMintAmount: 5,
       mintedAmount: 0,
       memberAddress: member
     });
@@ -66,7 +67,6 @@ contract MoonSharkMinterPrivate is Ownable,Pausable {
 
     for(uint i=0; i < members.length; i++){
       whitelists[members[i]] = WhiteList({
-        maxMintAmount: 5,
         mintedAmount: 0,
         memberAddress: members[i]
       });
@@ -79,6 +79,19 @@ contract MoonSharkMinterPrivate is Ownable,Pausable {
 
     WhiteList memory emptyWhiteList;
     whitelists[member] = emptyWhiteList;
+  }
+
+  function retrieveFund(address treasury) external onlyOwner whenPaused {
+    (bool success, ) = treasury.call{value: address(this).balance }("");
+    require(success, "FAILED TO SEND FUND TO TREASURY");
+  }
+
+  function pause() external onlyOwner {
+    _pause();
+  }
+
+  function unPause() external onlyOwner {
+    _unpause();
   }
 
 }
