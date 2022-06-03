@@ -10,7 +10,7 @@ describe("MoonShark NFT Minter", function () {
     [owner,odko,michael,bilguun,treasury] = await ethers.getSigners()
 
     const MoonSharkNFT = await ethers.getContractFactory("MoonSharkNFT")
-    moonSharkNFTContract = await MoonSharkNFT.deploy('https://moonsharks.mypinata.cloud/ipfs/QmQrWoXpstG2VjjjNacYr92kb7jgaoQynNAcKuvziVcKVf/json/')
+    moonSharkNFTContract = await MoonSharkNFT.deploy('https://moonsharks.mypinata.cloud/ipfs/QmWu12szJserRWiBGMhicAcxydogyzU8XFcxmSXx18fVhY/metadata/')
     moonSharkNFTContract.deployed()
 
     const MoonSharkPublicMinter = await ethers.getContractFactory("MoonSharkPublicMinter");

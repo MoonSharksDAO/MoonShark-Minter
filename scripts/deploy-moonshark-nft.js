@@ -1,7 +1,7 @@
 const hre = require("hardhat");
 
 async function main() {
-  const ipfsBase = "https://moonsharks.mypinata.cloud/ipfs/QmQrWoXpstG2VjjjNacYr92kb7jgaoQynNAcKuvziVcKVf/json/"
+  const ipfsBase = "https://moonsharks.mypinata.cloud/ipfs/QmWu12szJserRWiBGMhicAcxydogyzU8XFcxmSXx18fVhY/metadata/"
 
   const MoonSharkNFT = await hre.ethers.getContractFactory("MoonSharkNFT");
   const moonSharkNFTContract = await MoonSharkNFT.deploy(ipfsBase);
