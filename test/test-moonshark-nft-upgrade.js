@@ -12,7 +12,7 @@ describe("MoonShark NFT Upgradable - Update", function () {
  
     moonSharkNFTUpgradableContract = await upgrades.deployProxy(
       MoonSharkNFTUpgradable, 
-      ['ipfs://QmP7cNFhnAqLiCLhQkCJQ9TCSenRb3jkYzvQKoqj7GUCXC/',owner.address], 
+      ['https://moonsharks.mypinata.cloud/ipfs/QmWu12szJserRWiBGMhicAcxydogyzU8XFcxmSXx18fVhY/metadata/',owner.address], 
       { initializer: 'initialize' }
     );
 

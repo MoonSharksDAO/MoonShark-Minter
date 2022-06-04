@@ -12,7 +12,7 @@ contract MoonSharkPublicMinter is Ownable,Pausable {
 
   uint public MAX_CAP;
   uint public constant MAX_MINT_AMOUNT = 10;
-  uint public constant SINGLE_MINT_FEE = 0.05 ether;
+  uint public constant SINGLE_MINT_FEE = 0.025 ether;
 
   struct MintedMember {
     uint mintedAmount;

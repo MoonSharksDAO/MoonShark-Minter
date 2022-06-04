@@ -17,7 +17,7 @@ describe("MoonShark NFT Private Minter", function () {
     minterContract = await MoonSharkPrivateMinter.deploy(moonSharkNFTContract.address,10);
     await minterContract.deployed();
 
-    await moonSharkNFTContract.setMintRole(minterContract.address)
+    await moonSharkNFTContract.grantMintRole(minterContract.address)
   })
 
   
@@ -28,14 +28,14 @@ describe("MoonShark NFT Private Minter", function () {
 
   it("Solo Mint", async function () {
     await minterContract.addToWhitelist(odko.address)
-    await minterContract.connect(odko).mint({ value: ethers.utils.parseEther('0.05') })
+    await minterContract.connect(odko).mint({ value: ethers.utils.parseEther('0.025') })
 
     console.log("ID 1 - ",await moonSharkNFTContract.tokenURI(1))
 
     expect(await moonSharkNFTContract.totalSupply()).to.equal(1);
     expect(await moonSharkNFTContract.balanceOf(odko.address)).to.equal(1);
 
-    expect(await waffle.provider.getBalance(minterContract.address)).to.equal(ethers.utils.parseEther('0.05'));
+    expect(await waffle.provider.getBalance(minterContract.address)).to.equal(ethers.utils.parseEther('0.025'));
   })
 
   it("Solo Mint - revert message 'FEE ISN'T CORRECT' ", async function () {
@@ -44,7 +44,7 @@ describe("MoonShark NFT Private Minter", function () {
   })
 
   it("Solo Mint - revert message 'NOT IN WHITELIST' ", async function () {
-    await expect(minterContract.connect(odko).mint({ value: ethers.utils.parseEther('0.05') }))
+    await expect(minterContract.connect(odko).mint({ value: ethers.utils.parseEther('0.025') }))
       .to.be.revertedWith("NOT IN WHITELIST");
   })
 
@@ -52,13 +52,13 @@ describe("MoonShark NFT Private Minter", function () {
     await minterContract.addToWhitelist(odko.address)
 
     for (let i = 0; i < 5; i++) {
-      await minterContract.connect(odko).mint({ value: ethers.utils.parseEther('0.05') })
+      await minterContract.connect(odko).mint({ value: ethers.utils.parseEther('0.025') })
     }
     
-    await expect(minterContract.connect(odko).mint({ value: ethers.utils.parseEther('0.05') }))
+    await expect(minterContract.connect(odko).mint({ value: ethers.utils.parseEther('0.025') }))
       .to.be.revertedWith("MEMBER WHITELIST CAP REACHED");
 
-    expect(await waffle.provider.getBalance(minterContract.address)).to.equal(ethers.utils.parseEther('0.25'));
+    expect(await waffle.provider.getBalance(minterContract.address)).to.equal(ethers.utils.parseEther('0.125'));
   })
 
   it("Solo Mint - revert message 'MAX_CAP REACHED' ", async function () {
@@ -67,17 +67,17 @@ describe("MoonShark NFT Private Minter", function () {
     await minterContract.addToWhitelist(bilguun.address)
 
     for (let i = 0; i < 5; i++) {
-      await minterContract.connect(odko).mint({ value: ethers.utils.parseEther('0.05') })
+      await minterContract.connect(odko).mint({ value: ethers.utils.parseEther('0.025') })
     }
 
     for (let i = 0; i < 5; i++) {
-      await minterContract.connect(michael).mint({ value: ethers.utils.parseEther('0.05') })
+      await minterContract.connect(michael).mint({ value: ethers.utils.parseEther('0.025') })
     }
     
-    await expect(minterContract.connect(bilguun).mint({ value: ethers.utils.parseEther('0.05') }))
+    await expect(minterContract.connect(bilguun).mint({ value: ethers.utils.parseEther('0.025') }))
       .to.be.revertedWith("MAX_CAP REACHED");
 
-    expect(await waffle.provider.getBalance(minterContract.address)).to.equal(ethers.utils.parseEther('0.5'));
+    expect(await waffle.provider.getBalance(minterContract.address)).to.equal(ethers.utils.parseEther('0.25'));
   })
 
   //
@@ -111,29 +111,29 @@ describe("MoonShark NFT Private Minter", function () {
   it("Batch Mint - 5", async function () {
     await minterContract.addToWhitelist(odko.address)
 
-    await minterContract.connect(odko).batchMint(5,{ value: ethers.utils.parseEther((0.05*5).toString()) })
+    await minterContract.connect(odko).batchMint(5,{ value: ethers.utils.parseEther((0.025*5).toString()) })
 
     expect(await moonSharkNFTContract.totalSupply()).to.equal(5);
     expect(await moonSharkNFTContract.balanceOf(odko.address)).to.equal(5);
 
-    expect(await waffle.provider.getBalance(minterContract.address)).to.equal(ethers.utils.parseEther('0.25'));
+    expect(await waffle.provider.getBalance(minterContract.address)).to.equal(ethers.utils.parseEther('0.125'));
   })
 
   it("Batch Mint - 2 then 3", async function () {
     await minterContract.addToWhitelist(odko.address)
-    await minterContract.connect(odko).batchMint(2,{ value: ethers.utils.parseEther((0.05*2).toString()) })
+    await minterContract.connect(odko).batchMint(2,{ value: ethers.utils.parseEther((0.025*2).toString()) })
 
     expect(await moonSharkNFTContract.totalSupply()).to.equal(2);
     expect(await moonSharkNFTContract.balanceOf(odko.address)).to.equal(2);
 
-    expect(await waffle.provider.getBalance(minterContract.address)).to.equal(ethers.utils.parseEther('0.1'));
+    expect(await waffle.provider.getBalance(minterContract.address)).to.equal(ethers.utils.parseEther('0.05'));
 
-    await minterContract.connect(odko).batchMint(3,{ value: ethers.utils.parseEther('0.15') })
+    await minterContract.connect(odko).batchMint(3,{ value: ethers.utils.parseEther('0.075') })
 
     expect(await moonSharkNFTContract.totalSupply()).to.equal(5);
     expect(await moonSharkNFTContract.balanceOf(odko.address)).to.equal(5);
 
-    expect(await waffle.provider.getBalance(minterContract.address)).to.equal(ethers.utils.parseEther('0.25'));
+    expect(await waffle.provider.getBalance(minterContract.address)).to.equal(ethers.utils.parseEther('0.125'));
   })
 
   it("Batch Mint - revert message 'FEE ISN'T CORRECT' ", async function () {
@@ -146,7 +146,7 @@ describe("MoonShark NFT Private Minter", function () {
   it("Batch Mint - revert message 'MEMBER WHITELIST CAP REACHED' ", async function () {
     await minterContract.addToWhitelist(odko.address)
 
-    await expect(minterContract.connect(odko).batchMint(11,{ value: ethers.utils.parseEther((0.05*11).toString()) }))
+    await expect(minterContract.connect(odko).batchMint(11,{ value: ethers.utils.parseEther((0.025*11).toString()) }))
       .to.be.revertedWith("MEMBER WHITELIST CAP REACHED");
   })
 
@@ -155,10 +155,10 @@ describe("MoonShark NFT Private Minter", function () {
     await minterContract.addToWhitelist(michael.address)
     await minterContract.addToWhitelist(bilguun.address)
 
-    await minterContract.connect(odko).batchMint(5,{ value: ethers.utils.parseEther((0.05*5).toString()) })
-    await minterContract.connect(bilguun).batchMint(5,{ value: ethers.utils.parseEther((0.05*5).toString()) })
+    await minterContract.connect(odko).batchMint(5,{ value: ethers.utils.parseEther((0.025*5).toString()) })
+    await minterContract.connect(bilguun).batchMint(5,{ value: ethers.utils.parseEther((0.025*5).toString()) })
 
-    await expect(minterContract.connect(michael).batchMint(5,{ value: ethers.utils.parseEther((0.05*5).toString()) }))
+    await expect(minterContract.connect(michael).batchMint(5,{ value: ethers.utils.parseEther((0.025*5).toString()) }))
       .to.be.revertedWith("MAX_CAP REACHED");
   })
 
@@ -173,14 +173,14 @@ describe("MoonShark NFT Private Minter", function () {
 
     let treasuryBalanceBN = await waffle.provider.getBalance(treasury.address)
 
-    await minterContract.connect(odko).batchMint(5,{ value: ethers.utils.parseEther((0.05*5).toString()) })
-    await minterContract.connect(bilguun).batchMint(5,{ value: ethers.utils.parseEther((0.05*5).toString()) })
+    await minterContract.connect(odko).batchMint(5,{ value: ethers.utils.parseEther((0.025*5).toString()) })
+    await minterContract.connect(bilguun).batchMint(5,{ value: ethers.utils.parseEther((0.025*5).toString()) })
 
     await minterContract.pause()
 
     await minterContract.connect(owner).retrieveFund(treasury.address)
 
-    let amountToAdd = ethers.utils.parseEther((0.05*10).toString());
+    let amountToAdd = ethers.utils.parseEther((0.025*10).toString());
     let resultBN = treasuryBalanceBN.add(amountToAdd)
 
     expect(await waffle.provider.getBalance(treasury.address)).to.equal(resultBN);
@@ -190,8 +190,8 @@ describe("MoonShark NFT Private Minter", function () {
     await minterContract.addToWhitelist(odko.address)
     await minterContract.addToWhitelist(bilguun.address)
 
-    await minterContract.connect(odko).batchMint(5,{ value: ethers.utils.parseEther((0.05*5).toString()) })
-    await minterContract.connect(bilguun).batchMint(5,{ value: ethers.utils.parseEther((0.05*5).toString()) })
+    await minterContract.connect(odko).batchMint(5,{ value: ethers.utils.parseEther((0.025*5).toString()) })
+    await minterContract.connect(bilguun).batchMint(5,{ value: ethers.utils.parseEther((0.025*5).toString()) })
 
     await expect(minterContract.connect(owner).retrieveFund(treasury.address))
       .to.be.revertedWith("Pausable: not paused");
@@ -201,8 +201,8 @@ describe("MoonShark NFT Private Minter", function () {
     await minterContract.addToWhitelist(odko.address)
     await minterContract.addToWhitelist(bilguun.address)
 
-    await minterContract.connect(odko).batchMint(5,{ value: ethers.utils.parseEther((0.05*5).toString()) })
-    await minterContract.connect(bilguun).batchMint(5,{ value: ethers.utils.parseEther((0.05*5).toString()) })
+    await minterContract.connect(odko).batchMint(5,{ value: ethers.utils.parseEther((0.025*5).toString()) })
+    await minterContract.connect(bilguun).batchMint(5,{ value: ethers.utils.parseEther((0.025*5).toString()) })
 
     await minterContract.pause()
 

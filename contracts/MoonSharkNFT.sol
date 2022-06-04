@@ -13,6 +13,7 @@ contract MoonSharkNFT is ERC721A,AccessControl,Pausable {
   constructor(string memory _ipfs) ERC721A("MoonSharks", "SHARKS") {
     ipfsBase = _ipfs;
     _setupRole(ADMIN_ROLE, msg.sender);
+    _setupRole(MINTER_ROLE, msg.sender);
   }
 
   function mint(uint256 quantity) whenNotPaused() onlyRole(MINTER_ROLE) external {
@@ -31,11 +32,11 @@ contract MoonSharkNFT is ERC721A,AccessControl,Pausable {
     ipfsBase = _ipfs;
   }
 
-  function setAdminRole(address adminAddress) onlyRole(ADMIN_ROLE) external {
+  function grantAdminRole(address adminAddress) onlyRole(ADMIN_ROLE) external {
     _setupRole(ADMIN_ROLE, adminAddress);
   }
 
-  function setMintRole(address mintAddress) onlyRole(ADMIN_ROLE) external {
+  function grantMintRole(address mintAddress) onlyRole(ADMIN_ROLE) external {
     _setupRole(MINTER_ROLE, mintAddress);
   }
 
@@ -65,6 +66,14 @@ contract MoonSharkNFT is ERC721A,AccessControl,Pausable {
             interfaceId == 0x01ffc9a7 || // ERC165 interface ID for ERC165.
             interfaceId == 0x80ac58cd || // ERC165 interface ID for ERC721.
             interfaceId == 0x5b5e139f; // ERC165 interface ID for ERC721Metadata.
+  }
+
+  function pause() external onlyRole(ADMIN_ROLE) {
+    _pause();
+  }
+
+  function unPause() external onlyRole(ADMIN_ROLE) {
+    _unpause();
   }
 
 }
