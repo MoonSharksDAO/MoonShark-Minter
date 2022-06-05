@@ -7,6 +7,7 @@
   "function MAX_MINT_AMOUNT() view returns (uint256)",
   "function SINGLE_MINT_FEE() view returns (uint256)",
   "function batchMint(uint256) payable",
+  "function getBalance() view returns (uint256)",
   "function mint() payable",
   "function mintedMembers(address) view returns (uint256, address)",
   "function moonSharkNFT() view returns (address)",

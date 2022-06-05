@@ -9,6 +9,7 @@
   "function addToWhitelist(address)",
   "function batchAddToWhitelist(address[])",
   "function batchMint(uint256) payable",
+  "function getBalance() view returns (uint256)",
   "function mint() payable",
   "function moonSharkNFT() view returns (address)",
   "function owner() view returns (address)",

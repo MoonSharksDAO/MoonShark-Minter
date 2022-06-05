@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
-
 import "./IMoonSharkNFT.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
@@ -92,6 +91,10 @@ contract MoonSharkPrivateMinter is Ownable,Pausable {
 
   function unPause() external onlyOwner {
     _unpause();
+  }
+
+  function getBalance() view external returns(uint) {
+    return address(this).balance;
   }
 
 }

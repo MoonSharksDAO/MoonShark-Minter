@@ -66,4 +66,8 @@ contract MoonSharkPublicMinter is Ownable,Pausable {
     _unpause();
   }
 
+  function getBalance() view external returns(uint) {
+    return address(this).balance;
+  }
+
 }
