@@ -3,17 +3,21 @@ pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "erc721a/contracts/ERC721A.sol";
 
-contract MoonSharkNFT is ERC721A,AccessControl,Pausable {
+contract MoonSharkNFT is ERC721A,AccessControl,Pausable,Ownable {
   string private ipfsBase;
+
   bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+  bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
   bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
 
   constructor(string memory _ipfs) ERC721A("MoonSharks", "SHARKS") {
     ipfsBase = _ipfs;
     _setupRole(ADMIN_ROLE, msg.sender);
     _setupRole(MINTER_ROLE, msg.sender);
+    _setupRole(BURNER_ROLE, msg.sender);
   }
 
   function mint(uint256 quantity) whenNotPaused() onlyRole(MINTER_ROLE) external {
@@ -24,28 +28,16 @@ contract MoonSharkNFT is ERC721A,AccessControl,Pausable {
     _mint(to, quantity);
   }
 
+  function burn(uint256 tokenId) whenNotPaused() onlyRole(BURNER_ROLE) external {
+    _burn(tokenId);
+  }
+
   function _baseURI() override internal view returns (string memory){
     return ipfsBase;
   }
 
   function setIpfs(string memory _ipfs) whenPaused() onlyRole(ADMIN_ROLE) external {
     ipfsBase = _ipfs;
-  }
-
-  function grantAdminRole(address adminAddress) onlyRole(ADMIN_ROLE) external {
-    _setupRole(ADMIN_ROLE, adminAddress);
-  }
-
-  function grantMintRole(address mintAddress) onlyRole(ADMIN_ROLE) external {
-    _setupRole(MINTER_ROLE, mintAddress);
-  }
-
-  function revokeAdminRole(address to) onlyRole(ADMIN_ROLE) external {
-    _revokeRole(ADMIN_ROLE, to);
-  }
-
-  function revokeMintRole(address to) onlyRole(ADMIN_ROLE) external {
-    _revokeRole(MINTER_ROLE, to);
   }
 
   function tokenURI(uint256 tokenId) public view override returns (string memory) {
@@ -75,5 +67,12 @@ contract MoonSharkNFT is ERC721A,AccessControl,Pausable {
   function unPause() external onlyRole(ADMIN_ROLE) {
     _unpause();
   }
+
+  function _beforeTokenTransfers(
+    address from,
+    address to,
+    uint256 startTokenId,
+    uint256 quantity
+  ) internal override whenNotPaused() {}
 
 }
